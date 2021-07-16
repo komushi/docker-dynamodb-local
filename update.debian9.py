@@ -19,7 +19,7 @@ keys = [key.text for content in root.findall('{http://s3.amazonaws.com/doc/2006-
         if key.text.endswith('.tar.gz')]
 print(keys)
 
-dockerfile = open('Dockerfile.tpl').read()
+dockerfile = open('Dockerfile.debian9.tpl').read()
 entrypoint = open('docker-entrypoint.sh').read()
 for key in keys:
     version = key.replace('dynamodb_local_', '').replace('.tar.gz', '')
@@ -36,15 +36,15 @@ for key in keys:
     open(os.path.join(version, 'Dockerfile'), 'w').write(new_dockerfile)
     open(os.path.join(version, 'docker-entrypoint.sh'), 'w').write(entrypoint)
     os.chmod(os.path.join(version, 'docker-entrypoint.sh'), 0o755)
-    shutil.copy('./armv7lib/libsqlite4java-linux-arm.so', os.path.join(version, 'libsqlite4java-linux-arm.so'))
+    shutil.copy('./armv7lib/libsqlite4java-linux-arm.so.debian9', os.path.join(version, 'libsqlite4java-linux-arm.so'))
     #shutil.copy('./armv7lib/intarray.o', os.path.join(version, 'intarray.o'))
     #shutil.copy('./armv7lib/sqlite_wrap.o', os.path.join(version, 'sqlite_wrap.o'))
     #shutil.copy('./armv7lib/sqlite3_wrap_manual.o', os.path.join(version, 'sqlite3_wrap_manual.o'))
     #shutil.copy('./armv7lib/sqlite3.o', os.path.join(version, 'sqlite3.o'))
 
 # build
-for d in os.listdir('.'):
-    if os.path.isdir(d) and not d.startswith('.'):
-        print ('Working on ' + d)
-        subprocess.call(
-            ['docker', 'build', '--tag', 'komushi/dynamodb-local-alpine:' + d, d])
+# for d in os.listdir('.'):
+#     if os.path.isdir(d) and not d.startswith('.'):
+#         print ('Working on ' + d)
+#         subprocess.call(
+#             ['docker', 'build', '--tag', 'komushi/dynamodb-local-alpine:' + d, d])
